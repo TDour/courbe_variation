@@ -14,7 +14,7 @@ void speedUp(int &currentPwm, int targetPwm, struct dataStruct &speedParameters)
     currentPwm = (max((1 / (1 + (exp(-lambda * speedParameters.X)))) * speedParameters.deltaPwm, 0)) + speedParameters.pwmStart;
     delay(timeStep * 1000);
     speedParameters.i++;
-    if (speedParameters.i >= nPoint)
+    if (speedParameters.i >= nPoint)ygftft
     {
         currentPwm = targetPwm;
     }
