@@ -12,7 +12,7 @@ bool readConsigne(int &targetPwm)
     char inChar = (char)Serial.read();
     if (inChar == '\n')
     {
-    Serial.print('FIN'); gyvu
+    Serial.print('FIN');
 
       stringComplete = true;
     }

@@ -5,7 +5,7 @@
 // #endif
 // #include "parameters.h"
 // #include <Arduino.h>
-nhuygytuf
+
 void speedUp(int &currentPwm, int targetPwm, struct dataStruct &speedParameters)
 {
     speedParameters.pointTime = (variationTime / nPoint) + speedParameters.pointTime;
