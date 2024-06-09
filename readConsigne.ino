@@ -1,5 +1,5 @@
 // #ifndef  PARAMETERS_H
-// #include "parameters.h"
+//#include "parameters.h"
 // #endif
 
 bool readConsigne(int &targetPwm)
@@ -23,6 +23,7 @@ bool readConsigne(int &targetPwm)
 
   if (stringComplete)
   {
+    speedParameters.consigne = (inputString.toInt());
     targetPwm = convertConsigneToPwm(inputString.toInt());
     inputString = "";
     stringComplete = false;

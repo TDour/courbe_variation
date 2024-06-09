@@ -21,6 +21,7 @@ const float TIME_STEP = 0.05; // Temps entre 2 point de calcul
 
 struct dataStruct
 {
+  int consigne;      // Consigne en % 0-100
   int nPoint;      // Nombre de points pour le calcul de la courbe
   int deltaPwm;    // ecart en PWM de la consigne initiale à la consigne finale
   float pointTime; // Temps au point calculé
