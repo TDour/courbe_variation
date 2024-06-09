@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <math.h>
+#include "read_Consigne.h"
 // #ifndef  PARAMETERS_h
 // #include "parameters.h"
 // #endif
@@ -8,38 +9,40 @@
 
 void speedUp(int &currentPwm, int targetPwm, struct dataStruct &speedParameters)
 {
-    speedParameters.pointTime = (variationTime / nPoint) + speedParameters.pointTime;
-    speedParameters.X = (1.0 / nPoint) + speedParameters.X;
+  speedParameters.pointTime = (VARIATION_TIME / speedParameters.nPoint) + speedParameters.pointTime;
+  speedParameters.X = (1.0 / speedParameters.nPoint) + speedParameters.X;
 
-    currentPwm = (max((1 / (1 + (exp(-lambda * speedParameters.X)))) * speedParameters.deltaPwm, 0)) + speedParameters.pwmStart;
-    delay(timeStep * 1000);
-    speedParameters.i++;
-    if (speedParameters.i >= nPoint)
-    {
-        currentPwm = targetPwm;
-    }
+  currentPwm = (max((1 / (1 + (exp(-LAMBDA * speedParameters.X)))) * speedParameters.deltaPwm, 0)) + speedParameters.pwmStart;
+  delay(TIME_STEP * 1000);
+  Serial.print("i = ");
+  Serial.println(speedParameters.i);
+  speedParameters.i++;
+  if (speedParameters.i >= speedParameters.nPoint)
+  {
+    currentPwm = targetPwm;
+  }
 }
 
 void slowDown(int &currentPwm, int targetPwm, struct dataStruct &speedParameters)
 {
-    speedParameters.pointTime = (variationTime / nPoint) + speedParameters.pointTime;
-    speedParameters.X = (1.0 / nPoint) + speedParameters.X;
+  speedParameters.pointTime = (VARIATION_TIME / speedParameters.nPoint) + speedParameters.pointTime;
+  speedParameters.X = (1.0 / speedParameters.nPoint) + speedParameters.X;
 
-    currentPwm = (max((1 / (1 + (exp(lambda * speedParameters.X)))) * speedParameters.deltaPwm, 0));//speedParameters.pwmStart;
-   //Boucle_Variation.Pwm_Min + (max((1 / (1 + (exp(Lambda * Boucle_Variation.X)))) * Boucle_Variation.Pwm_Delta, 0));
-    delay(timeStep * 1000);
-    speedParameters.i++;
-    if (speedParameters.i >= nPoint)
-    {
-        currentPwm = targetPwm;
-    }
+  currentPwm = targetPwm + (max((1 / (1 + (exp(LAMBDA * speedParameters.X)))) * speedParameters.deltaPwm, 0)); // speedParameters.pwmStart;
+  // Boucle_Variation.Pwm_Min + (max((1 / (1 + (exp(LAMBDA * Boucle_Variation.X)))) * Boucle_Variation.Pwm_Delta, 0));
+  delay(TIME_STEP * 1000);
+  speedParameters.i++;
+  if (speedParameters.i >= speedParameters.nPoint)
+  {
+    currentPwm = targetPwm;
+  }
 }
 /*
-int deceleration(float Temps_Accel, float Lambda, float Consigne_Mem, float Consigne, struct Bouclage &Boucle_Variation)
+int deceleration(float Temps_Accel, float LAMBDA, float Consigne_Mem, float Consigne, struct Bouclage &Boucle_Variation)
 {
   if (Boucle_Variation.Init == 0)
   {
-    init_struct(Temps_Accel, Lambda, Consigne_Mem, Consigne, -1);
+    init_struct(Temps_Accel, LAMBDA, Consigne_Mem, Consigne, -1);
   }
   if (Boucle_Variation.Init == 1)
   {
@@ -48,11 +51,11 @@ int deceleration(float Temps_Accel, float Lambda, float Consigne_Mem, float Cons
     Boucle_Variation.X = (1.0 / Boucle_Variation.NbPoint) + Boucle_Variation.X;
     if (Consigne == 0)
     {
-      Boucle_Variation.Pwm = max((1 / (1 + (exp(Lambda * Boucle_Variation.X)))) * Boucle_Variation.Pwm_Start, 0);
+      Boucle_Variation.Pwm = max((1 / (1 + (exp(LAMBDA * Boucle_Variation.X)))) * Boucle_Variation.Pwm_Start, 0);
     }
     else
     {
-      Boucle_Variation.Pwm = Boucle_Variation.Pwm_Min + (max((1 / (1 + (exp(Lambda * Boucle_Variation.X)))) * Boucle_Variation.Pwm_Delta, 0));
+      Boucle_Variation.Pwm = Boucle_Variation.Pwm_Min + (max((1 / (1 + (exp(LAMBDA * Boucle_Variation.X)))) * Boucle_Variation.Pwm_Delta, 0));
     }
     delay(Boucle_Variation.IntervalTemps * 1000);
     Serial.print(" | TempsPoint =");
@@ -76,8 +79,22 @@ int deceleration(float Temps_Accel, float Lambda, float Consigne_Mem, float Cons
 }*/
 void reset(int &currentPwm, int targetPwm, struct dataStruct &speedParameters)
 {
-    speedParameters.deltaPwm = abs(currentPwm - targetPwm);
-    speedParameters.pointTime = 0.0;
-    speedParameters.pwmStart = currentPwm;
-    speedParameters.X = -0.5;
+  speedParameters.deltaPwm = abs(currentPwm - targetPwm);
+  speedParameters.pointTime = 0.0;
+  speedParameters.pwmStart = currentPwm;
+  speedParameters.X = -0.5;
+  speedParameters.i = 0;
+  // speedParameters.nPoint =int( ((abs(targetPwm-currentPwm) *100)/(191-63) * 20 * VARIATION_TIME ));
+  // Serial.print("nPoint0 = ");
+  speedParameters.nPoint = int(((float(speedParameters.deltaPwm) / 255.0) * VARIATION_TIME) / TIME_STEP);
+  // Serial.println((abs(targetPwm-currentPwm) *100)/(191-63));
+  // int(20 * VARIATION_TIME * float(convertPwmToPercent(targetPwm)) / 100);
+  /////////////////////////////////////
+
+  /////////////////////////////////////
+  Serial.println();
+  Serial.print(">>>deltaPwm = ");
+  Serial.println(speedParameters.deltaPwm);
+  Serial.print(">>>nPoint = ");
+  Serial.println(speedParameters.nPoint);
 }

@@ -12,7 +12,6 @@ bool readConsigne(int &targetPwm)
     char inChar = (char)Serial.read();
     if (inChar == '\n')
     {
-    Serial.print('FIN');
 
       stringComplete = true;
     }
@@ -35,10 +34,13 @@ bool readConsigne(int &targetPwm)
 
 int convertConsigneToPwm(int consigne)
 {
-  return (handleMinMaxConsigne(consigne) * 255) / 100;
+  return (handleMinMAX_CONSIGNE(consigne) * 255) / 100;
 }
-
-int handleMinMaxConsigne(int consigne)
+int convertPwmToPercent(int targetPwm)
 {
-  return consigne * (maxConsigne - minConsigne) / 100 + minConsigne;
+  return (targetPwm * 100) / 255;
+}
+int handleMinMAX_CONSIGNE(int consigne)
+{
+  return consigne * (MAX_CONSIGNE - MIN_CONSIGNE) / 100 + MIN_CONSIGNE;
 }
