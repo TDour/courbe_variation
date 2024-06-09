@@ -45,7 +45,7 @@ void slowDown(int &currentPwm, int targetPwm, struct dataStruct &speedParameters
 
 void stop_motor(int &currentpwm)
 {
-  currentpwm = 0
+  currentpwm = 0;
 }
 
 void reset(int &currentPwm, int targetPwm, struct dataStruct &speedParameters)
